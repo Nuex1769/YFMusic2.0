@@ -299,7 +299,7 @@
 
                 .song-name {
                     width: 100%;
-                    font-size: 16px;
+                    font-size: 15px;
                     color: #FFFFFF;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -314,21 +314,26 @@
             }
 
             .play-btn {
-                flex: 0 0 80px;
+                flex: 0 0 60px;
                 display: flex;
+                align-items: center;
                 color: #787878;
 
-                i {
-                    font-size: 25px;
-                }
-
-                .play,
-                .more {
+                .play {
                     flex: 1;
                 }
-
+                        
+                .play i {
+                    font-size: 25px;
+                }
+                
                 .more {
+                    flex: 0 0 20px;
                     transform: rotateZ(90deg);
+                }
+                
+                .more i {
+                    font-size: 20px;
                 }
             }
         }

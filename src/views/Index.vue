@@ -2,7 +2,7 @@
     <div class="index">
         <div class="header">
             <div class="header-left"><i class="el-icon-s-operation"></i></div>
-            <div class="header-input"><i class="el-icon-search"></i>一生所爱</div>
+            <div class="header-input" @click="goSearch"><i class="el-icon-search"></i>一生所爱</div>
             <div class="header-right" @click="goPlayer"><i class="el-icon-s-data"></i></div>
         </div>
         <div class="banner-box">
@@ -122,6 +122,11 @@
             goPlayer() {
                 this.$router.push({
                     path: '/musicplayer'
+                })
+            },
+            goSearch(){
+                this.$router.push({
+                    path: '/search'
                 })
             },
             goRecommend(){

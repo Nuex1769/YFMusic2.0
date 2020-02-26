@@ -22,7 +22,8 @@ export default new Vuex.Store({
         dailyRecommend: '', //每日推荐
         playList: [],
         order: '',
-        showPlayList:false
+        showPlayList:false,
+        searchData:''
     },
     mutations: {
         setUserData(state, val) {
@@ -75,6 +76,9 @@ export default new Vuex.Store({
         },
         setShowPlayList(state, val){
             state.showPlayList = val
+        },
+        setSearchData(state, val){
+            state.searchData = val
         }
     },
     actions: {
@@ -82,6 +86,11 @@ export default new Vuex.Store({
             commit
         }, val) {
             commit('setUserData', val)
+        },
+        getSearchData({
+            commit
+        }, val) {
+            commit('setSearchData', val)
         },
         getFavoriteSong({
             commit,

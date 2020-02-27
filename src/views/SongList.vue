@@ -1,28 +1,26 @@
 <template>
     <div class="favorite-song">
-        <div class="player-bg" v-if="dailyRecommend" :style="{background:'url('+ dailyRecommend[0].album.picUrl +') no-repeat center top #000000'}"></div>
+        <div class="player-bg" v-if="songListData" :style="{background:'url('+ songListData.coverImgUrl +') no-repeat center #000000'}"></div>
         <div class="player-color"></div>
         <div class="favorite-song-header">
             <PageHeader pageName="歌单"></PageHeader>
         </div>
         <div class="main-box">
             <div class="songList-box">
-                <div class="songList-message-box" v-if="false">
+                <div class="songList-message-box" v-if="songListData">
                     <div class="songList-img">
-                        <img src="../../public/img/user.jpg" alt="">
+                        <img :src="songListData.coverImgUrl" alt="">
                     </div>
                     <div class="songList-message">
-                        <div class="songList-name">每日推荐</div>
+                        <div class="songList-name">{{songListData.name}}</div>
                         <div class="songList-user">
-                            <img src="../../public/img/user.jpg" alt="">
-                            <div class="name">虐心</div>
+                            <img :src="songListData.creator.avatarUrl" alt="">
+                            <div class="name">{{songListData.creator.nickname}}</div>
                             <i class="el-icon-arrow-right"></i>
                         </div>
-                    </div>
-                </div>
-                <div class="songList-message-box" v-if="true">
-                    <div class="day">
-                        {{day}}<span>/{{month}}</span>
+                        <div class="songList-text">
+                            {{songListData.description}}
+                        </div>
                     </div>
                 </div>
                 <div class="operate-list">
@@ -47,12 +45,12 @@
                     <div class="play-all">
                         <i class="el-icon-video-play"></i>播放全部<span>(共298首)</span>
                     </div>
-                    <div class="song" v-for="(item,index) in dailyRecommend" :key="index" @click="playSong(item)">
+                    <div class="song" v-for="(item,index) in songListData.tracks" :key="index" @click="playSong(item)">
                         <div class="num">{{index+1}}</div>
                         <div class="song-msg">
                             <div class="song-msg-box">
                                 <div class="song-name">{{item.name}}</div>
-                                <div class="song-singer">{{item.artists[0].name}}-{{item.album.subType}}</div>
+                                <div class="song-singer">{{item.ar[0].name}}-{{item.al.name}}</div>
                             </div>
                         </div>
                         <div class="play-btn">
@@ -88,7 +86,7 @@
             ...mapState({
                 favoriteSong: state => state.favoriteSong,
                 httpUrl: state => state.httpUrl,
-                dailyRecommend: state => state.dailyRecommend,
+                songListData: state => state.songListData,
                 playList: state => state.playList,
                 order: state => state.order
             }),
@@ -124,6 +122,7 @@
                 });
             },
             playSong(item) {
+                console.log(item)
                 //判断歌曲是否存在播放列表
                 let ind = indexVf(this.playList, item);
                 if (this.playList.length > 0 && ind != '') { //存在播放列表则播放列表内歌曲
@@ -174,11 +173,10 @@
             width: 100%;
             height: 100%;
             background: #000000;
-            // background-size: 100%;
-            background-size: 100% !important;
-            // filter: blur(100px);
+            background-size: cover !important;
+            filter: blur(100px);
             z-index: -1;
-            // opacity: 0.9;
+            opacity: 0.9;
         }
 
         .player-color {
@@ -228,11 +226,11 @@
         }
 
         .songList-img {
-            flex: 0 0 100px;
+            flex: 0 0 120px;
 
             img {
-                width: 100px;
-                height: 100px;
+                width: 120px;
+                height: 120px;
                 border-radius: 10px;
             }
         }
@@ -269,6 +267,12 @@
             .songList-user i {
                 font-size: 15px;
                 color: #ccc;
+            }
+            
+            .songList-text{
+                margin-top: 10px;
+                font-size: 10px;
+                color: #CCCCCC;
             }
         }
     }

@@ -9,6 +9,7 @@ import VideoView from '../views/VideoView.vue'
 import FavoriteSong from '../components/FavoriteSong.vue'
 import DailyRecommend from '../views/DailyRecommend.vue'
 import SearchResult from '../views/SeachResult.vue'
+import SongList from '../views/SongList.vue'
 
 Vue.use(VueRouter)
 
@@ -58,6 +59,11 @@ const routes = [
     path: '/searchresult',
     name: 'SearchResult',
     component: SearchResult
+  },
+  {
+    path: '/songlist',
+    name: 'SongList',
+    component: SongList
   }
 ]
 

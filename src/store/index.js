@@ -20,10 +20,15 @@ export default new Vuex.Store({
         recommendSongListData: '', //推荐歌单
         recommendSongData: '', //推荐歌曲
         dailyRecommend: '', //每日推荐
-        playList: [],
-        order: '',
-        showPlayList:false,
-        searchData:''
+        playList: [], //播放列表
+        order: '', //播放序号
+        showPlayList:false, //显示播放列表
+        searchData:'', //搜索歌曲列表
+        album:'', //专辑数据
+        keyword:'', //搜索关键词
+        searchVideoData:'' , //搜索视频列表
+        mv:[] ,//推荐MV,
+        songListData:''
     },
     mutations: {
         setUserData(state, val) {
@@ -79,6 +84,21 @@ export default new Vuex.Store({
         },
         setSearchData(state, val){
             state.searchData = val
+        },
+        setAlbum(state, val){
+            state.album = val
+        },
+        setKeyword(state,val){
+            state.keyword = val
+        },
+        setSearchVideoData(state,val){
+            state.searchVideoData = val
+        },
+        setMV(state,val){
+            state.mv.push(val)
+        },
+        setSongListData(state,val){
+            state.songListData = val
         }
     },
     actions: {
@@ -221,6 +241,31 @@ export default new Vuex.Store({
             commit
         }, val){
             commit('subPlayList',val)
+        },
+        getAlbum({
+            commit
+        }, val){
+            commit('setAlbum',val)
+        },
+        getKeyword({
+            commit
+        }, val){
+            commit('setKeyword',val) 
+        },
+        getSearchVideoData({
+            commit
+        }, val){
+            commit('setSearchVideoData',val)
+        },
+        getMV({
+            commit
+        }, val){
+            commit('setMV',val)
+        },
+        getSongListData({
+            commit
+        }, val){
+            commit('setSongListData',val)
         }
     },
     modules: {

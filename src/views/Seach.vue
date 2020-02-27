@@ -1,7 +1,7 @@
 <template>
     <div class="seach">
         <div class="header">
-            <div class="header-input"><input type="text" v-model="keyword"></div>
+            <div class="header-input"><input type="text" v-model="keyword" autofocus></div>
             <div class="header-right" @click="bakc">取消</div>
         </div>
         <div class="main" v-if="showHotSearch">
@@ -75,12 +75,14 @@
             });
         },
         methods: {
-            ...mapActions(['getSearchData']),
+            ...mapActions(['getSearchData','getKeyword']),
             bakc() {
+                this.getKeyword('');
                 this.$router.go(-1);
             },
             selKeyword(key){
                 this.keyword = key.keyword;
+                this.getKeyword(key.keyword);
                 this.$router.push({
                     path: '/searchresult'
                 })
@@ -99,6 +101,7 @@
         },
         watch:{
             keyword(){
+                this.getKeyword(this.keyword);
                 if(this.keyword == ''){
                     this.showHotSearch = true;
                 }else{

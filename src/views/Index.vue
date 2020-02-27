@@ -42,7 +42,7 @@
                 <div class="list">
                     <swiper :options="swiperOption">
                         <swiper-slide v-for="(item,i) in recommendSongListData" :key="i">
-                            <div class="list-item">
+                            <div class="list-item" @click="getSongListDetail(item.id)">
                                 <div class="song-img"><img :src="item.picUrl" alt=""></div>
                                 <div class="song-text">{{item.name}}</div>
                             </div>
@@ -61,7 +61,7 @@
                 <div class="list">
                     <swiper :options="swiperOption1">
                         <swiper-slide v-for="index in 3" :key="index">
-                            <div class="song-list-item" v-if="recommendSongData != {}" v-for="(song,i) in recommendSongData.slice((index-1)*3,index*3)" :key="i">
+                            <div class="song-list-item" v-if="recommendSongData != {}" v-for="(song,i) in recommendSongData.slice((index-1)*3,index*3)" :key="i" @click="playSong(song)">
                                 <div class="song-img"><img :src="song.picUrl" alt=""></div>
                                 <div class="song-text">{{song.name + '-' + song.song.artists[0].name}}</div>
                                 <div class="song-play">
@@ -81,8 +81,10 @@
     import axios from 'axios'
     import {
         mapState,
+        mapMutations,
         mapActions
     } from 'vuex'
+    import indexVf from '../../public/js/indexVf.js'
     import Banner from '../components/Banner.vue'
     import Tabbar from '../components/Tabbar.vue'
     import {
@@ -110,7 +112,9 @@
             ...mapState({
                 httpUrl: state => state.httpUrl,
                 recommendSongData: state => state.recommendSongData,
-                recommendSongListData: state => state.recommendSongListData
+                recommendSongListData: state => state.recommendSongListData,
+                playList: state => state.playList,
+                order: state => state.order
             })
         },
         mounted() {
@@ -118,7 +122,8 @@
             this.getRecommendSongs();
         },
         methods: {
-            ...mapActions(['getRecommendSongListData', 'getRecommendSongData']),
+            ...mapMutations(['setSongMessage']),
+            ...mapActions(['getRecommendSongListData', 'getRecommendSongData','getSongListData','getOrder','getLyric','pushPlayList','getThisPlayUrl']),
             goPlayer() {
                 this.$router.push({
                     path: '/musicplayer'
@@ -159,6 +164,43 @@
                 }).catch((error) => {
                     console.log(error)
                 });
+            },
+            getSongListDetail(id){
+                axios({
+                    withCredentials: true,
+                    url: this.httpUrl + '/playlist/detail?id=' + id
+                }).then((res) => {
+                    console.log(res)
+                    if (res.data.code == 200) {
+                        this.getSongListData(res.data.playlist);
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                });
+                this.$router.push({
+                    path: '/songlist'
+                })
+            },
+            playSong(item) {
+                console.log(item)
+                //判断歌曲是否存在播放列表
+                let ind = indexVf(this.playList, item);
+                if (this.playList.length > 0 && ind != '') { //存在播放列表则播放列表内歌曲
+                    this.getOrder(ind);
+                } else { //不存在则添加歌曲到播放列表播放
+                    this.pushPlayList(item);
+                    this.getOrder(this.playList.length - 1);
+                }
+                this.$router.push({
+                    path: '/musicplayer'
+                });
+            }
+        },
+        watch: {
+            order() { //监听播放列表内播放序号改变 改变播放器数据
+                this.setSongMessage();
+                this.getLyric();
+                this.getThisPlayUrl();
             }
         },
         components: {

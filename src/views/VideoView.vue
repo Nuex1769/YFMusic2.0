@@ -7,17 +7,16 @@
         </div>
         <div class="main-box">
             <div class="mv-list">
-                <div class="mv">
-                    <div class="mv-itme"><video poster="http://p1.music.126.net/w2vk2R-GjV5B9fMhfyQPjQ==/109951164718507151.jpg" controls="controls" src="http://vodkgeyttp8.vod.126.net/cloudmusic/MjQ3NDQ3MjUw/89a6a279dc2acfcd068b45ce72b1f560/533e4183a709699d566180ed0cd9abe9.mp4?wsSecret=764923a713417eab29b429364eb18074&wsTime=1582132777"></video></div>
-                    <div class="mv-text">邓紫棋《句号》</div>
-                </div>
-                <div class="mv">
-                    <div class="mv-itme"><video controls="controls" src="http://vodkgeyttp8.vod.126.net/cloudmusic/MjQ3NDQ3MjUw/89a6a279dc2acfcd068b45ce72b1f560/533e4183a709699d566180ed0cd9abe9.mp4?wsSecret=764923a713417eab29b429364eb18074&wsTime=1582132777"></video></div>
-                    <div class="mv-text">邓紫棋《句号》</div>
-                </div>
-                <div class="mv">
-                    <div class="mv-itme"><video controls="controls" src="http://vodkgeyttp8.vod.126.net/cloudmusic/MjQ3NDQ3MjUw/89a6a279dc2acfcd068b45ce72b1f560/533e4183a709699d566180ed0cd9abe9.mp4?wsSecret=764923a713417eab29b429364eb18074&wsTime=1582132777"></video></div>
-                    <div class="mv-text">邓紫棋《句号》</div>
+                <div class="mv-list-scroll">
+                    <div class="mv" v-for="(item,i) in mv" :key="i">
+                        <div class="mv-itme">
+                            <div class="play-icon" @click="playVideo(i)" v-show="mvIndex !== i">
+                                <!-- <div class="fullScreen" @click="fullScreen(i)"></div> -->
+                            </div>
+                            <video :poster="item.data.picUrl" preload :src="item.url" ref='mvs' @click="ended(i)"></video>
+                        </div>
+                        <div class="mv-text">{{item.data.name}}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -26,18 +25,85 @@
 </template>
 
 <script>
+    import {
+        mapState,
+        mapActions
+    } from 'vuex'
+    import axios from 'axios'
     import Tabbar from '../components/Tabbar.vue'
     export default {
         data() {
             return {
-
+                mvIndex:''
             }
         },
+        mounted() {
+            this.getmvList();
+        },
+        computed: {
+            ...mapState({
+                mv: state => state.mv,
+                httpUrl: state => state.httpUrl
+            })
+        },
         methods: {
+            ...mapActions(['getMV']),
             goPlayer() {
                 this.$router.push({
                     path: '/musicplayer'
                 })
+            },
+            playVideo(i){
+                this.mvIndex = i;
+                let mv = this.$refs.mvs;
+                for(let v in mv){
+                    mv[v].pause();
+                }
+                mv[i].play();
+                mv[i].webkitRequestFullScreen();
+            },
+            // fullScreen(i){
+            //     let mv = this.$refs.mvs;
+            //     mv[i].webkitRequestFullScreen();
+            // },
+            ended(i){
+                let mv = this.$refs.mvs;
+                mv[i].pause();
+                this.mvIndex = '';
+            },
+            getmvList() {
+                axios({
+                    withCredentials: true,
+                    url: this.httpUrl + '/personalized/mv'
+                }).then((res) => {
+                    console.log(res)
+                    if (res.data.code == 200) {
+                        for (let i in res.data.result) {
+                            let url = this.getMvUrl(res.data.result[i]);
+                        }
+                        console.log(this.mv)
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                });
+            },
+            getMvUrl(item) {
+                console.log(item)
+                axios({
+                    withCredentials: true,
+                    url: this.httpUrl + '/mv/url?id=' + item.id
+                }).then((res) => {
+                    console.log(res)
+                    if (res.data.code == 200) {
+                        let mData = new Object;
+                        let url = res.data.data.url;
+                        mData.data = item;
+                        mData.url = url;
+                        this.getMV(mData);
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                });
             }
         },
         components: {
@@ -56,12 +122,12 @@
         width: 100%;
         height: 100%;
         background: #000000;
+        overflow: hidden;
 
         .main-box {
             width: 100%;
-            margin-top: 80px;
-            padding: 0 20px;
-            box-sizing: border-box;
+            height: 100%;
+            margin-top: 60px;
         }
     }
 
@@ -74,7 +140,6 @@
         width: 100%;
         display: flex;
         text-align: center;
-        height: 60px;
         z-index: 9;
         background: #000000;
 
@@ -110,20 +175,61 @@
 
     .mv-list {
         width: 100%;
+        height: 100%;
+        overflow: hidden;
+        overflow-y: scroll;
+
+        .mv-list-scroll {
+            padding-bottom: 148px;
+        }
 
         .mv {
-            padding:10px 0px;
-            border-bottom: 1px solid #B4BCCC;
+            margin-top: 10px;
+            padding: 30px 20px 10px 20px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.1);
+
+            .mv-itme {
+                position: relative;
+            }
+
+            .mv-itme .play-icon {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url(../../public/img/icon/zbofang.png) no-repeat center;
+                background-size: 50px;
+                z-index: 3;
+                opacity: 0.8;
+            }
             
-            .mv-text{
-                text-align: left;
+            // .mv-itme .play-icon .fullScreen{
+            //     position: absolute;
+            //     bottom: 0;
+            //     right: 0;
+            // }
+
+            .mv-text {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
                 font-size: 14px;
                 color: #fff;
+                padding: 6px 0 10px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             }
+        }
+
+        .mv:last-child {
+            border-bottom: none;
         }
 
         video {
             width: 100%;
+            border-radius: 8px;
         }
+
     }
 </style>

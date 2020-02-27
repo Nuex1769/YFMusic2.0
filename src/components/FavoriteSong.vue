@@ -310,6 +310,9 @@
                     width: 100%;
                     font-size: 12px;
                     color: #ccc;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
 

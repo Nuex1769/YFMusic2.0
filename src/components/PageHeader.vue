@@ -14,30 +14,34 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
-    export default{
-        props:['pageName'],
-        data(){
-            return{
-                
+    import {
+        mapState
+    } from 'vuex'
+    export default {
+        props: ['pageName'],
+        data() {
+            return {
+
             }
         },
-        computed:{
+        computed: {
             // ...mapState({pageName: state => state.pageName})
         },
-        methods:{
-            goBack(){
+        methods: {
+            goBack() {
                 this.$router.go(-1);
             },
-            player(){
-                this.$router.push({path:'/musicplayer'});
+            player() {
+                this.$router.push({
+                    path: '/musicplayer'
+                });
             }
         }
     }
 </script>
 
 <style lang="scss" scoped="scoped">
-    .page-header{
+    .page-header {
         width: 100%;
         height: 60px;
         padding: 0 20px;
@@ -47,23 +51,53 @@
         align-items: center;
         // background-color: #000000;
         color: #ccc;
-        
-        .title{
+
+        .title {
+            flex: 1;
+            margin: 0 10px;
+            position: relative;
             text-align: center;
             font-size: 15px;
             color: #fff;
-            
-            .singer{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            // .title-box{
+            //     position: absolute;
+            //     top: 0;
+            //     left: 0;
+            //     width: 100%;
+            //     height: 100%;
+            // }
+
+            .name {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .singer {
+                width: 100%;
                 color: #ccc;
                 font-size: 12px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
-        
-        .back i{
+
+        .back,
+        .btn-box {
+            flex: 0 0 20px;
+        }
+
+        .back i {
             font-size: 20px;
         }
-        
-        .btn-box i{
+
+        .btn-box i {
             font-size: 20px;
         }
     }

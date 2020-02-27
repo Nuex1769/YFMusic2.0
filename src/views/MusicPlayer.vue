@@ -15,7 +15,8 @@
                     </div>
                     <div class="record">
                         <div class="song-img" v-if="playList">
-                            <img v-if="songMessage.album" :src="songMessage.album.picUrl || ''" alt="">
+                            <img v-if="songMessage.picUrl" :src="songMessage.picUrl || ''" alt="">
+                            <img v-if="songMessage.album" :src="songMessage.album.picUrl || album.picUrl || ''" alt="">
                             <img v-if="songMessage.al" :src="songMessage.al.picUrl || ''" alt="">
                         </div>
                     </div>
@@ -123,7 +124,8 @@
                 thisSongTime: state => state.thisSongTime,
                 duration: state => state.duration,
                 playList: state => state.playList,
-                order: state => state.order
+                order: state => state.order,
+                album: state => state.album
             }),
             getDuration() {
                 let min = Math.floor(this.duration / 60) + "";
@@ -587,7 +589,7 @@
                 padding: 8px 0;
             }
 
-            .colorur {
+            .lyrics .colorur {
                 font-size: 15px;
                 color: #fff !important;
             }

@@ -7,18 +7,18 @@
         </div>
         <div class="main-box">
             <div class="songList-box">
-                <div class="songList-message-box" v-if="songListData">
+                <div class="songList-message-box">
                     <div class="songList-img">
-                        <img :src="songListData.coverImgUrl" alt="">
+                        <img v-if="songListData" :src="songListData.coverImgUrl" alt="">
                     </div>
                     <div class="songList-message">
-                        <div class="songList-name">{{songListData.name}}</div>
+                        <div class="songList-name" v-if="songListData">{{songListData.name}}</div>
                         <div class="songList-user">
-                            <img :src="songListData.creator.avatarUrl" alt="">
-                            <div class="name">{{songListData.creator.nickname}}</div>
+                            <img v-if="songListData" :src="songListData.creator.avatarUrl" alt="">
+                            <div class="name" v-if="songListData">{{songListData.creator.nickname}}</div>
                             <i class="el-icon-arrow-right"></i>
                         </div>
-                        <div class="songList-text">
+                        <div class="songList-text" v-if="songListData">
                             {{songListData.description}}
                         </div>
                     </div>
@@ -43,9 +43,9 @@
                 </div>
                 <div class="favorite-song-list">
                     <div class="play-all">
-                        <i class="el-icon-video-play"></i>播放全部<span>(共298首)</span>
+                        <i class="el-icon-video-play"></i>播放全部<span v-if="songListData.tracks">(共{{songListData.tracks.length || 0}}首)</span>
                     </div>
-                    <div class="song" v-for="(item,index) in songListData.tracks" :key="index" @click="playSong(item)">
+                    <div class="song" v-if="songListData" v-for="(item,index) in songListData.tracks" :key="index" @click="playSong(item)">
                         <div class="num">{{index+1}}</div>
                         <div class="song-msg">
                             <div class="song-msg-box">
@@ -58,6 +58,7 @@
                             <div class="more"><i class="el-icon-more"></i></div>
                         </div>
                     </div>
+                    <div class="loading" v-if="!songListData"><i class="el-loading-text"></i></div>
                 </div>
             </div>
         </div>
@@ -79,8 +80,11 @@
                 
             }
         },
-        mounted() {
+        created() {
             this.getSongList();
+        },
+        mounted() {
+            // this.getSongList();
         },
         computed: {
             ...mapState({
@@ -227,6 +231,9 @@
 
         .songList-img {
             flex: 0 0 120px;
+            height: 120px;
+            background: rgba(7,17,27,0.6);
+            border-radius: 10px;
 
             img {
                 width: 120px;
@@ -270,9 +277,12 @@
             }
             
             .songList-text{
+                max-height: 32px;
                 margin-top: 10px;
                 font-size: 10px;
                 color: #CCCCCC;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
@@ -390,6 +400,13 @@
                     font-size: 20px;
                 }
             }
+        }
+        
+        .loading{
+            width: 100%;
+            height: 80px;
+            background: url(../../public/img/loading.gif) no-repeat center;
+            background-size: contain;
         }
     }
 </style>

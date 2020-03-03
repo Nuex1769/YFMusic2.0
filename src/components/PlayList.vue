@@ -11,7 +11,7 @@
                     <div class="del"><i class="el-icon-delete"></i></div>
                 </div>
                 <div class="play-list-song">
-                    <div class="song" v-for="(item,i) in playList" :key="i">
+                    <div class="song" v-for="(item,i) in playList" :key="i" :class="{thisPlay : order == i}" @click="play(i)">
                         <div class="song-msg">{{item.name}}
                         <span v-if="item.ar">- {{item.ar[0].name}}</span>
                         <span v-if="item.artists">- {{item.artists[0].name}}</span>
@@ -36,17 +36,21 @@
         computed:{
             ...mapState({
                 showPlayList: state => state.showPlayList,
-                playList: state => state.playList
+                playList: state => state.playList,
+                order: state => state.order
             })
         },
         methods:{
             ...mapMutations(['setShowPlayList']),
-            ...mapActions(['delPlayList']),
+            ...mapActions(['delPlayList','getOrder']),
             showPL(){
                 this.setShowPlayList(false);
             },
             del(i){
                 this.delPlayList(i);
+            },
+            play(ind){
+                this.getOrder(ind);
             }
         }
     }
@@ -162,6 +166,9 @@
         .song-msg {
             flex: 1;
             font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             
             span{
                 font-size: 12px;
@@ -172,6 +179,19 @@
         .del-icon {
             flex: 0 0 20px;
             font-size: 20px;
+            color: #EEEEEE;
+        }
+    }
+    
+    .play-list-song .thisPlay{
+        color: red;
+        
+        .song-msg span{
+            color: red;
+        }
+        
+        .del-icon{
+            color: #EEEEEE;
         }
     }
     

@@ -141,13 +141,6 @@
                 }
                 return count;
             }
-        },
-        watch: {
-            order() { //监听播放列表内播放序号改变 改变播放器数据
-                this.setSongMessage();
-                this.getLyric();
-                this.getThisPlayUrl();
-            }
         }
     }
 </script>

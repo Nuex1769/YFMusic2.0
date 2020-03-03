@@ -117,9 +117,13 @@
                 order: state => state.order
             })
         },
-        mounted() {
+        created() {
             this.getRecommendSongLists();
             this.getRecommendSongs();
+        },
+        mounted() {
+            // this.getRecommendSongLists();
+            // this.getRecommendSongs();
         },
         methods: {
             ...mapMutations(['setSongMessage']),
@@ -166,6 +170,7 @@
                 });
             },
             getSongListDetail(id){
+                this.getSongListData('');
                 axios({
                     withCredentials: true,
                     url: this.httpUrl + '/playlist/detail?id=' + id

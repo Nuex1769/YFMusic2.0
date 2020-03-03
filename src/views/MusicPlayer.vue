@@ -97,12 +97,7 @@
                 timeOutEvent:''
             }
         },
-        beforeMount() {
-            let h = document.documentElement.clientHeight || document.body.clientHeight;
-            this.curHeight = parseInt(h * 0.25);
-            console.log(h + '-' + this.curHeight)
-        },
-        mounted() {
+        created() {
             this.$nextTick(() => { // 使用 this.$nextTick 为了确保组件已经渲染完毕
                 let wrapper = document.querySelector('.lyrics-list')
                 if (!this.scroll && this.$refs.wrapper) {
@@ -116,6 +111,11 @@
                 }
             })
         },
+        beforeMount() {
+            let h = document.documentElement.clientHeight || document.body.clientHeight;
+            this.curHeight = parseInt(h * 0.25);
+            console.log(h + '-' + this.curHeight)
+        },
         computed: {
             ...mapState({
                 songMessage: state => state.songMessage,
@@ -128,31 +128,35 @@
                 album: state => state.album
             }),
             getDuration() {
-                let min = Math.floor(this.duration / 60) + "";
-                let s = Math.floor(this.duration % 60) + "";
-                if (min.length == 1) {
-                    min = "0" + min;
+                if(this.duration){
+                    let min = Math.floor(this.duration / 60) + "";
+                    let s = Math.floor(this.duration % 60) + "";
+                    if (min.length == 1) {
+                        min = "0" + min;
+                    }
+                    if (s.length == 1) {
+                        s = "0" + s;
+                    }
+                    let times = min + ":" + s;
+                    return times;
+                    console.log(times)
                 }
-                if (s.length == 1) {
-                    s = "0" + s;
-                }
-                let times = min + ":" + s;
-                return times;
-                console.log(times)
             },
             thisTime() {
-                let times = '0:00';
-                let min = Math.floor(this.thisSongTime / 60) + "";
-                let s = Math.floor(this.thisSongTime % 60) + "";
-                if (min.length == 1) {
-                    min = "0" + min;
+                if(this.thisSongTime){
+                    let times = '0:00';
+                    let min = Math.floor(this.thisSongTime / 60) + "";
+                    let s = Math.floor(this.thisSongTime % 60) + "";
+                    if (min.length == 1) {
+                        min = "0" + min;
+                    }
+                    if (s.length == 1) {
+                        s = "0" + s;
+                    }
+                    times = min + ":" + s;
+                    return times;
+                    console.log(times)
                 }
-                if (s.length == 1) {
-                    s = "0" + s;
-                }
-                times = min + ":" + s;
-                return times;
-                console.log(times)
             },
             getlinear() {
                 return this.indexline;

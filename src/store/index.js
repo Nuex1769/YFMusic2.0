@@ -28,7 +28,8 @@ export default new Vuex.Store({
         keyword:'', //搜索关键词
         searchVideoData:'' , //搜索视频列表
         mv:[] ,//推荐MV,
-        songListData:''
+        songListData:'',
+        recordList:['all right'],
     },
     mutations: {
         setUserData(state, val) {
@@ -99,6 +100,9 @@ export default new Vuex.Store({
         },
         setSongListData(state,val){
             state.songListData = val
+        },
+        setRecordList(state,val){
+            state.recordList.unshift(val)
         }
     },
     actions: {
@@ -266,6 +270,11 @@ export default new Vuex.Store({
             commit
         }, val){
             commit('setSongListData',val)
+        },
+        getRecordList({
+            commit
+        }, val){
+            commit('setRecordList',val)
         }
     },
     modules: {

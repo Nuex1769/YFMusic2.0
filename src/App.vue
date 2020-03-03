@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <div class="guide" v-if="!banner && !showIndex"></div>
         <router-view @getAudioState="setAudio" />
         <Audio ref="player" @time-update="timeUpdate" />
     </div>
@@ -16,19 +17,25 @@
     export default {
         data() {
             return {
-
+                showIndex: false
             }
         },
-        mounted() {
+        created() {
             this.login()
             this.loadBanner()
+        },
+        mounted() {
+            // this.login()
+            // this.loadBanner()
         },
         computed: {
             ...mapState({
                 httpUrl: state => state.httpUrl,
                 thisPlayUrl: state => state.thisPlayUrl,
                 playList: state => state.playList,
-                order: state => state.order
+                order: state => state.order,
+                songMessage: state => state.songMessage,
+                banner: state => state.banner
             })
         },
         methods: {
@@ -59,6 +66,9 @@
                     console.log(res)
                     if (res.data.code == 200) {
                         this.getBanner(res.data.banners)
+                        setTimeout(()=>{
+                            this.showIndex = true
+                        },500);
                     }
                 }).catch((error) => {
                     console.log(error)
@@ -85,7 +95,7 @@
                     this.getDuration(audio.duration);
                 } else {
                     // this.subPlayList();
-                    if (this.playList.length > this.order) {
+                    if (this.playList.length-1 > this.order) {
                         this.getOrder(this.order + 1);
                     } else {
                         console.log("播放结束")
@@ -115,5 +125,16 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
+        
+        .guide{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(../public/img/guide.jpg) no-repeat center #000000;
+            background-size: cover;
+            z-index: 999;
+        }
     }
 </style>

@@ -7,19 +7,13 @@
         <div class="main" v-if="showHotSearch">
             <div class="title">搜索历史</div>
             <div class="history">
-                <div class="history-item">
-                    all right
-                </div>
-                <div class="history-item">
-                    all right
-                </div>
-                <div class="history-item" v-for="i in 6">
-                    all right
+                <div class="history-item" v-for="(item,i) in recordList" :key="i" @click="selKeyword(item)">
+                    {{item}}
                 </div>
             </div>
             <div class="title">热搜榜</div>
             <div class="hot">
-                <div class="hot-item" v-for="(item,i) in hotSearch" :key="i">
+                <div class="hot-item" v-for="(item,i) in hotSearch" :key="i" @click="selKeyword(item.first)">
                     <div class="num" :class="{hotClass : i < 4}">
                         {{i+1}}
                     </div>
@@ -33,7 +27,7 @@
             <div class="keyword">
                 搜索"{{keyword}}"
             </div>
-            <div class="keyword-msg" v-for="(k,i) in keywordList" :key="i" @click="selKeyword(k)">
+            <div class="keyword-msg" v-for="(k,i) in keywordList" :key="i" @click="selKeyword(k.keyword)">
                 <i class="el-icon-search"></i>
                 <div class="msg">{{k.keyword}}</div>
             </div>
@@ -58,10 +52,11 @@
         },
         computed: {
             ...mapState({
-                httpUrl: state => state.httpUrl
+                httpUrl: state => state.httpUrl,
+                recordList: state => state.recordList
             })
         },
-        mounted() {
+        created() {
             axios({
                 withCredentials: true,
                 url: this.httpUrl + '/search/hot/detail'
@@ -75,20 +70,21 @@
             });
         },
         methods: {
-            ...mapActions(['getSearchData','getKeyword']),
+            ...mapActions(['getSearchData','getKeyword','getRecordList']),
             bakc() {
                 this.getKeyword('');
                 this.$router.go(-1);
             },
             selKeyword(key){
-                this.keyword = key.keyword;
-                this.getKeyword(key.keyword);
+                this.keyword = key;
+                this.getKeyword(key);
+                this.getRecordList(key);
                 this.$router.push({
                     path: '/searchresult'
                 })
                 axios({
                     withCredentials: true,
-                    url: this.httpUrl + '/search?keywords=' + key.keyword + '&limit=15&offset=1'
+                    url: this.httpUrl + '/search?keywords=' + key + '&limit=15&offset=1'
                 }).then((res) => {
                     console.log(res)
                     if (res.data.code == 200) {

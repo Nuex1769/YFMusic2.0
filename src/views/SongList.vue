@@ -110,7 +110,7 @@
             }
         },
         methods: {
-            ...mapMutations(['setPlayStatus', 'setSongMessage']),
+            ...mapMutations(['setPlayStatus', 'setSongMessage','setShowPlayer']),
             ...mapActions(['getThisPlayUrl', 'getPageName', 'getLyric', 'getDailyRecommend', 'pushPlayList', 'getOrder']),
             getSongList() {
                 axios({
@@ -135,9 +135,7 @@
                     this.pushPlayList(item);
                     this.getOrder(this.playList.length - 1);
                 }
-                this.$router.push({
-                    path: '/musicplayer'
-                });
+                this.setShowPlayer();
             }
         },
         watch: {

@@ -25,11 +25,11 @@ const routes = [
     name: 'index',
     component: Index
   },
-  {
-    path: '/musicplayer',
-    name: 'MusicPlayer',
-    component: MusicPlayer
-  },
+  // {
+  //   path: '/musicplayer',
+  //   name: 'MusicPlayer',
+  //   component: MusicPlayer
+  // },
   {
     path: '/search',
     name: 'Search',

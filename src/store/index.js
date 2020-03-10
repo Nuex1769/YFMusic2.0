@@ -30,10 +30,19 @@ export default new Vuex.Store({
         mv:[] ,//推荐MV,
         songListData:'',
         recordList:['all right'],
+        showPlayer: false,
+        indexLine: 0,//歌词播放的位置
     },
     mutations: {
         setUserData(state, val) {
             state.userData = val
+        },
+        setIndexLine(state, val){
+            state.indexLine = val
+        },
+        setShowPlayer(state,val){
+            state.showPlayer = !state.showPlayer
+            console.log(state.showPlayer)
         },
         setThisPlayUrl(state, val) {
             state.thisPlayUrl = val
@@ -110,6 +119,11 @@ export default new Vuex.Store({
             commit
         }, val) {
             commit('setUserData', val)
+        },
+        getIndexLine({
+            commit
+        }, val){
+            commit('setIndexLine',val)
         },
         getSearchData({
             commit

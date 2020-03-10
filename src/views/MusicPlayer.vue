@@ -1,5 +1,5 @@
 <template>
-    <div class="player">
+    <div class="player" v-show="showPlayer">
         <div class="player-bg" v-if="songMessage.album" :style="{background:'url('+ songMessage.album.picUrl +') no-repeat center #000000'}"></div>
         <div class="player-bg" v-if="songMessage.al" :style="{background:'url('+ songMessage.al.picUrl +') no-repeat center #000000'}"></div>
         <div class="player-color"></div>
@@ -12,7 +12,7 @@
                 <div class="pattern-record" v-show="lyr" @click="showLyr">
                     <div class="needle">
                         <div class="needle-img" :class="playStatus ? 'endNeedle' : 'playNeedle'">
-                            <img src="../../public/img/needle2.png" alt=""> 
+                            <img src="../../public/img/needle2.png" alt="">
                         </div>
                     </div>
                     <div class="record">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <!-- 歌词 -->
-                <div class="pattern-lyrics" :class="{hidebox : lyr}" @click="showLyr">
+                <div class="pattern-lyrics" v-show="!lyr" @click="showLyr">
                     <div class="lyr-box">
                         <div class="volume-box">
                             <div class="volume-icon"><i class="el-icon-bell"></i></div>
@@ -44,7 +44,7 @@
                         <div class="lyrics-box">
                             <div class="lyrics-list" ref="wrapper">
                                 <ul class="lyrics">
-                                    <li class="lyrics-item" v-for="(l,i) in lyric" :key="i" :class="{colorur : i == indexline}">{{l.c}}</li>
+                                    <li class="lyrics-item" v-for="(l,i) in lyric" :key="i" :class="{colorur : i == indexLine}">{{l.c}}</li>
                                 </ul>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
             <!-- 控件 -->
             <div class="control">
                 <div class="progress">
-                    <div class="time">{{thisTime}}</div>
+                    <div class="time">{{thisTime|| '0:00'}}</div>
                     <div class="progress-box">
                         <div class="progress-box-p">
                             <div class="total"></div>
@@ -63,15 +63,17 @@
                                 @touchend.stop="end"></div>
                         </div>
                     </div>
-                    <div class="time">{{getDuration}}</div>
+                    <div class="time">{{getDuration || '0:00'}}</div>
                 </div>
                 <div class="control-list">
                     <div class="control-item"><img src="../../public/img/icon/xunhuan.png" alt=""></div>
-                    <div class="control-item" @click="prev"><img src="../../public/img/icon/shangyishoushangyige.png" alt=""></div>
+                    <div class="control-item" @click="prev"><img src="../../public/img/icon/shangyishoushangyige.png"
+                            alt=""></div>
                     <div class="control-item play" @click="setStatus"><img v-if="!playStatus" src="../../public/img/icon/zbofang.png"
                             alt=""><img v-if="playStatus" src="../../public/img/icon/bofangzanting.png" alt=""></div>
                     <div class="control-item" @click="next"><img src="../../public/img/icon/xiayigexiayishou.png" alt=""></div>
-                    <div class="control-item" @click="showPL"><img src="../../public/img/icon/PlayListbofangliebiao.png" alt=""></div>
+                    <div class="control-item" @click="showPL"><img src="../../public/img/icon/PlayListbofangliebiao.png"
+                            alt=""></div>
                 </div>
             </div>
         </div>
@@ -93,30 +95,15 @@
             return {
                 lyr: true,
                 linear: 0,
-                indexline: 0,
+                // indexline: 0,
                 curHeight: 0,
                 longClick: 0,
-                timeOutEvent:''
+                timeOutEvent: ''
             }
         },
-        created() {
-            this.$nextTick(() => { // 使用 this.$nextTick 为了确保组件已经渲染完毕
-                let wrapper = document.querySelector('.lyrics-list')
-                if (!this.scroll && this.$refs.wrapper) {
-                    this.scroll = new BScroll(wrapper, {
-                        click: true, // 允许点击
-                        momentum: true,
-                        scrollY: true
-                    });
-                    console.log(this.scroll)
-                    console.log(this.$refs.wrapper)
-                }
-            })
-        },
-        beforeMount() {
-            let h = document.documentElement.clientHeight || document.body.clientHeight;
-            this.curHeight = parseInt(h * 0.25);
-            console.log(h + '-' + this.curHeight)
+        updated() {
+            //初始better-scroll
+            this.initScroll()
         },
         computed: {
             ...mapState({
@@ -127,10 +114,12 @@
                 duration: state => state.duration,
                 playList: state => state.playList,
                 order: state => state.order,
-                album: state => state.album
+                album: state => state.album,
+                showPlayer: state => state.showPlayer,
+                indexLine: state => state.indexLine
             }),
-            getDuration() {
-                if(this.duration){
+            getDuration() { //歌曲时长
+                if (this.duration) {
                     let min = Math.floor(this.duration / 60) + "";
                     let s = Math.floor(this.duration % 60) + "";
                     if (min.length == 1) {
@@ -144,8 +133,8 @@
                     console.log(times)
                 }
             },
-            thisTime() {
-                if(this.thisSongTime){
+            thisTime() { //歌曲播放时间进度
+                if (this.thisSongTime) {
                     let times = '0:00';
                     let min = Math.floor(this.thisSongTime / 60) + "";
                     let s = Math.floor(this.thisSongTime % 60) + "";
@@ -161,16 +150,32 @@
                 }
             },
             getlinear() {
-                return this.indexline;
-            },
+                return this.indexLine
+            }
         },
         methods: {
-            ...mapMutations(['setPlayStatus','setShowPlayList']),
-            ...mapActions(['getSongMessage','getOrder']),
+            ...mapMutations(['setPlayStatus', 'setShowPlayList']),
+            ...mapActions(['getSongMessage', 'getOrder', 'getIndexLine']),
+            initScroll() {
+                // 避免内存泄露
+                if (!this.menuScroll) {
+                    // 保证他是个单例
+                    this.menuScroll = new BScroll(this.$refs.wrapper, {
+                        click: true, // 允许点击
+                        momentum: true,
+                        scrollY: true
+                    })
+                    console.log(this.menuScroll)
+                    let h = document.documentElement.clientHeight || document.body.clientHeight;
+                    this.curHeight = parseInt(h * 0.25);
+                } else {
+                    this.menuScroll.refresh() // 重新计算高度
+                }
+            },
             showLyr() {
                 this.lyr = !this.lyr
             },
-            showPL(){
+            showPL() {
                 this.setShowPlayList(true);
             },
             setStatus() {
@@ -197,14 +202,14 @@
                 }
                 return false;
             },
-            prev(){
-                if(this.order > 0){
-                    this.getOrder(this.order-1)
+            prev() {
+                if (this.order > 0) {
+                    this.getOrder(this.order - 1)
                 }
             },
-            next(){
-                if(this.order < this.playList.length - 1){
-                    this.getOrder(this.order+1)
+            next() {
+                if (this.order < this.playList.length - 1) {
+                    this.getOrder(this.order + 1)
                 }
             }
         },
@@ -216,7 +221,7 @@
                     for (let i = 0; i < this.lyric.length; i++) {
                         let timer = Number(this.lyric[i].t);
                         if (timer - time < 0.5) {
-                            this.indexline = i;
+                            this.getIndexLine(i);
                         }
                     }
                 }
@@ -228,11 +233,21 @@
                     let planTime = Number(h.toFixed(3));
                     // console.log(planTime)
                 };
-            },
-            getlinear(val) {
-                console.log(-this.curHeight)
+                
                 let colorur = document.querySelector('.colorur');
-                this.scroll.scrollToElement(colorur, 500, false, -this.curHeight);
+                if (this.curHeight) {
+                    this.menuScroll.scrollToElement(colorur, 500, false, -this.curHeight);
+                } else {
+                    this.menuScroll.scrollToElement(colorur, 500, false, -166);
+                }
+            },
+            getlinear() {
+                let colorur = document.querySelector('.colorur');
+                if (this.curHeight) {
+                    this.menuScroll.scrollToElement(colorur, 500, false, -this.curHeight);
+                } else {
+                    this.menuScroll.scrollToElement(colorur, 500, false, -166);
+                }
             }
         },
         components: {
@@ -246,7 +261,7 @@
     .player {
         display: flex;
         flex-direction: column;
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         bottom: 0;
@@ -254,6 +269,7 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        z-index: 99;
 
         .player-bg {
             position: absolute;
@@ -319,12 +335,12 @@
         justify-content: center;
         width: 100%;
         z-index: 2;
-        
-        .needle-img{
+
+        .needle-img {
             width: 100%;
             display: flex;
             justify-content: center;
-            
+
             img {
                 width: 444px;
                 height: 345px;
@@ -333,12 +349,12 @@
                 transform-origin: 50% 5%;
             }
         }
-        
-        .playNeedle img{
+
+        .playNeedle img {
             animation: close 0.5s linear forwards;
         }
-        
-        .endNeedle img{
+
+        .endNeedle img {
             animation: play 1s linear forwards;
         }
 
@@ -357,14 +373,14 @@
                 transform-origin: 50% 5%;
             }
         }
-        
+
         @keyframes play {
             0% {
                 // transform: rotate(-30deg);
                 // transform-origin: 50% 5%;
                 // transform-origin: 94px 12px;
             }
-        
+
             100% {
                 // transform: rotateZ(-30deg);
                 transform: rotate(0deg);

@@ -4,13 +4,15 @@
         <keep-alive>
             <router-view @getAudioState="setAudio" />
         </keep-alive>
-            <Audio ref="player" @time-update="timeUpdate" />
+        <MusicPlayer></MusicPlayer>
+        <Audio ref="player" @time-update="timeUpdate" />
     </div>
 </template>
 
 <script>
     import axios from 'axios'
     import Audio from './components/Audio.vue'
+    import MusicPlayer from './views/MusicPlayer.vue'
     import {
         mapState,
         mapMutations,
@@ -37,7 +39,8 @@
                 playList: state => state.playList,
                 order: state => state.order,
                 songMessage: state => state.songMessage,
-                banner: state => state.banner
+                banner: state => state.banner,
+                showPlayer: state => state.showPlayer
             })
         },
         methods: {
@@ -118,7 +121,8 @@
             }
         },
         components: {
-            Audio
+            Audio,
+            MusicPlayer
         }
     }
 </script>

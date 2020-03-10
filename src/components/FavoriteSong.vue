@@ -85,7 +85,7 @@
             })
         },
         methods: {
-            ...mapMutations(['setPlayStatus', 'setSongMessage']),
+            ...mapMutations(['setPlayStatus', 'setSongMessage','setShowPlayer']),
             ...mapActions(['getThisPlayUrl', 'getPageName', 'getLyric', 'pushPlayList', 'getOrder']),
             playSong(item) {
                 //判断歌曲是否存在播放列表
@@ -96,9 +96,7 @@
                     this.pushPlayList(item);
                     this.getOrder(this.playList.length - 1);
                 }
-                this.$router.push({
-                    path: '/musicplayer'
-                });
+                this.setShowPlayer();
             }
         },
         components: {

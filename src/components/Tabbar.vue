@@ -21,7 +21,9 @@
 
 <script>
     export default {
-        props:['ind'],
+        props:{
+            ind:[Number]
+        },
         data() {
             return {
                 index:this.ind

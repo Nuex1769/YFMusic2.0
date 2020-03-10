@@ -126,12 +126,13 @@
             // this.getRecommendSongs();
         },
         methods: {
-            ...mapMutations(['setSongMessage']),
+            ...mapMutations(['setSongMessage','setShowPlayer']),
             ...mapActions(['getRecommendSongListData', 'getRecommendSongData','getSongListData','getOrder','getLyric','pushPlayList','getThisPlayUrl']),
             goPlayer() {
-                this.$router.push({
-                    path: '/musicplayer'
-                })
+                // this.$router.push({
+                //     path: '/musicplayer'
+                // })
+                this.setShowPlayer();
             },
             goSearch(){
                 this.$router.push({
@@ -196,9 +197,7 @@
                     this.pushPlayList(item);
                     this.getOrder(this.playList.length - 1);
                 }
-                this.$router.push({
-                    path: '/musicplayer'
-                });
+                this.setShowPlayer();
             }
         },
         watch: {

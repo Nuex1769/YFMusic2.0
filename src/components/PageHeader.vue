@@ -15,26 +15,32 @@
 
 <script>
     import {
-        mapState
+        mapState,
+        mapMutations
     } from 'vuex'
     export default {
-        props: ['pageName'],
+        props: {
+            pageName:[Object,String]
+        },
         data() {
             return {
 
             }
         },
         computed: {
-            // ...mapState({pageName: state => state.pageName})
+            ...mapState({showPlayer: state => state.showPlayer})
         },
         methods: {
+            ...mapMutations(['setShowPlayer']),
             goBack() {
-                this.$router.go(-1);
+                if(this.showPlayer){
+                    this.setShowPlayer();
+                }else{
+                    this.$router.go(-1);
+                }
             },
             player() {
-                this.$router.push({
-                    path: '/musicplayer'
-                });
+               this.setShowPlayer();
             }
         }
     }

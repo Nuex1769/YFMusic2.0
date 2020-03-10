@@ -1,8 +1,10 @@
 <template>
     <div id="app">
         <div class="guide" v-if="!banner && !showIndex"></div>
-        <router-view @getAudioState="setAudio" />
-        <Audio ref="player" @time-update="timeUpdate" />
+        <keep-alive>
+            <router-view @getAudioState="setAudio" />
+        </keep-alive>
+            <Audio ref="player" @time-update="timeUpdate" />
     </div>
 </template>
 
@@ -40,7 +42,9 @@
         },
         methods: {
             ...mapMutations(['subPlayList']),
-            ...mapActions(['getUserData', 'getSongTime', 'getBanner', 'getDuration', 'getThisPlayUrl', 'getOrder','getSongMessage','getLyric']),
+            ...mapActions(['getUserData', 'getSongTime', 'getBanner', 'getDuration', 'getThisPlayUrl', 'getOrder',
+                'getSongMessage', 'getLyric'
+            ]),
             login() {
                 axios({
                     // headers: {
@@ -66,9 +70,9 @@
                     console.log(res)
                     if (res.data.code == 200) {
                         this.getBanner(res.data.banners)
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             this.showIndex = true
-                        },500);
+                        }, 500);
                     }
                 }).catch((error) => {
                     console.log(error)
@@ -95,7 +99,7 @@
                     this.getDuration(audio.duration);
                 } else {
                     // this.subPlayList();
-                    if (this.playList.length-1 > this.order) {
+                    if (this.playList.length - 1 > this.order) {
                         this.getOrder(this.order + 1);
                     } else {
                         console.log("播放结束")
@@ -107,7 +111,7 @@
             thisPlayUrl() {
                 this.getSongDuration();
             },
-            order(){
+            order() {
                 this.getSongMessage();
                 this.getThisPlayUrl();
                 this.getLyric();
@@ -125,8 +129,8 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
-        
-        .guide{
+
+        .guide {
             position: absolute;
             top: 0;
             left: 0;

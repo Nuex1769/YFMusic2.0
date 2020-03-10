@@ -11,7 +11,9 @@
                 <!-- 唱片动画 -->
                 <div class="pattern-record" v-show="lyr" @click="showLyr">
                     <div class="needle">
-                        <img src="../../public/img/needle2.png" alt="">
+                        <div class="needle-img" :class="playStatus ? 'endNeedle' : 'playNeedle'">
+                            <img src="../../public/img/needle2.png" alt=""> 
+                        </div>
                     </div>
                     <div class="record">
                         <div class="song-img" v-if="playList">
@@ -317,15 +319,33 @@
         justify-content: center;
         width: 100%;
         z-index: 2;
-
-        img {
-            width: 50%;
-            animation: close 1s linear forwards;
-            // animation-fill-mode：forwards；
+        
+        .needle-img{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            
+            img {
+                width: 444px;
+                height: 345px;
+                zoom: 0.4;
+                transform: rotate(-30deg);
+                transform-origin: 50% 5%;
+            }
+        }
+        
+        .playNeedle img{
+            animation: close 0.5s linear forwards;
+        }
+        
+        .endNeedle img{
+            animation: play 1s linear forwards;
         }
 
         @keyframes close {
             0% {
+                // transform: rotate(0deg);
+                // transform-origin: 50% 5%;
                 // transform: rotateZ(0deg);
                 // transform: rotate(0deg);
                 // transform-origin: 94px 12px;
@@ -334,7 +354,21 @@
             100% {
                 // transform: rotateZ(-30deg);
                 transform: rotate(-30deg);
-                transform-origin: 94px 12px;
+                transform-origin: 50% 5%;
+            }
+        }
+        
+        @keyframes play {
+            0% {
+                // transform: rotate(-30deg);
+                // transform-origin: 50% 5%;
+                // transform-origin: 94px 12px;
+            }
+        
+            100% {
+                // transform: rotateZ(-30deg);
+                transform: rotate(0deg);
+                transform-origin: 50% 5%;
             }
         }
     }

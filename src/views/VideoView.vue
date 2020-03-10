@@ -2,7 +2,7 @@
     <div class="video-view">
         <div class="header">
             <div class="header-left"><i class="el-icon-s-operation"></i></div>
-            <div class="header-input"><i class="el-icon-search"></i>�生所�/div>
+            <div class="header-input"><i class="el-icon-search"></i>一生所爱</div>
             <div class="header-right" @click="goPlayer"><i class="el-icon-s-data"></i></div>
         </div>
         <div class="main-box">
@@ -34,7 +34,7 @@
     export default {
         data() {
             return {
-                mvIndex:''
+                mvIndex: ''
             }
         },
         created() {
@@ -53,10 +53,10 @@
                     path: '/musicplayer'
                 })
             },
-            playVideo(i){
+            playVideo(i) {
                 this.mvIndex = i;
                 let mv = this.$refs.mvs;
-                for(let v in mv){
+                for (let v in mv) {
                     mv[v].pause();
                 }
                 mv[i].play();
@@ -66,7 +66,7 @@
             //     let mv = this.$refs.mvs;
             //     mv[i].webkitRequestFullScreen();
             // },
-            ended(i){
+            ended(i) {
                 let mv = this.$refs.mvs;
                 mv[i].pause();
                 this.mvIndex = '';
@@ -204,7 +204,7 @@
                 z-index: 3;
                 opacity: 0.8;
             }
-            
+
             // .mv-itme .play-icon .fullScreen{
             //     position: absolute;
             //     bottom: 0;

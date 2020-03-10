@@ -1,7 +1,7 @@
 # YFMusic
 
 ## 灵感来自
-[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+感谢[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)的开源API
 
 前往[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 下载并运行Node.js API 运行3000端口
 

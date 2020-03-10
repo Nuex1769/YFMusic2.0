@@ -3,7 +3,7 @@
 ## 灵感来自
 [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
-[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 前往下载并运行Node.js API 运行3000端口
+前往[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 下载并运行Node.js API 运行3000端口
 
 ## 功能列表
 
@@ -19,7 +19,7 @@
 
 6.播放进度条
 
-7.Mv播放
+7.MV播放
 
 ## 环境要求
 
